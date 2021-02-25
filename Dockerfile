@@ -1,6 +1,6 @@
 ARG package=github.com/tback/fritzbox_exporter
 
-FROM golang:1.8-alpine as build
+FROM golang:1.15-alpine as build
 ARG package
 
 RUN apk add --no-cache git
