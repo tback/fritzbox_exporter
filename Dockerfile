@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Build Image
-FROM golang:1.25.5-alpine3.23 AS builder
+FROM golang:1.26.3-alpine3.23 AS builder
 
 WORKDIR /usr/src/app
 
@@ -15,7 +15,7 @@ COPY . .
 RUN CGO_ENABLED=0 go build -ldflags '-extldflags "-static"' -o /usr/local/bin/app -v 
 
 # Runtime Image
-FROM scratch
+FROM gcr.io/distroless/static-debian13
 
 ARG REPO=tback/fritzbox_exporter
 
