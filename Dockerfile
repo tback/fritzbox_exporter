@@ -12,10 +12,10 @@ RUN go mod download
 RUN mkdir -p /usr/local/bin/app
 
 COPY . .
-RUN CGO_ENABLED=0 go build -ldflags '-extldflags "-static"' -o /usr/local/bin/app -v 
+RUN CGO_ENABLED=0 go build -ldflags '-s -w -extldflags "-static"' -o /usr/local/bin/app -v 
 
 # Runtime Image
-FROM gcr.io/distroless/static-debian13
+FROM gcr.io/distroless/static-debian13:nonroot
 
 ARG REPO=tback/fritzbox_exporter
 
@@ -27,10 +27,12 @@ ENV GATEWAY_URL http://fritz.box:49000
 ENV GATEWAY_LUAURL http://fritz.box
 ENV LISTEN_ADDRESS 0.0.0.0:9042
 
-COPY --from=builder /usr/local/bin/app /
-COPY metrics.json metrics-lua.json /
+USER nonroot
 
-USER nobody
+WORKDIR /
+
+COPY --from=builder /usr/local/bin/app/fritzbox_exporter /fritzbox_exporter
+COPY metrics.json metrics-lua.json /
 
 EXPOSE 9042
 
