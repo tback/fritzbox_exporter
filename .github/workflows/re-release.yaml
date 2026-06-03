@@ -12,15 +12,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.3
 
       - name: Delete
-        uses: ame-yu/action-delete-latest-release@v2
+        uses: actions/github-script@v9.0.0
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+            script: |
+                const { owner, repo } = context.repo
+                const { data: { id } } = await github.repos.getLatestRelease({ owner, repo })
+                await github.repos.deleteRelease({ owner, repo, release_id: id })
 
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v3.0.0
         with:
           name: latest
           tag_name: latest
