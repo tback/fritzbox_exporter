@@ -15,7 +15,7 @@ COPY . .
 RUN CGO_ENABLED=0 go build -ldflags '-s -w -extldflags "-static"' -o /app/bin -v 
 
 # Runtime Image
-FROM gcr.io/distroless/static-debian13:nonroot
+FROM gcr.io/distroless/static-debian13:nonroot AS runtime-image
 
 ARG REPO=tback/fritzbox_exporter
 
