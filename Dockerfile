@@ -3,13 +3,13 @@
 # Build Image
 FROM golang:1.26.3 AS builder
 
+RUN mkdir -p /app/bin
+
 WORKDIR /app
 
 # pre-copy/cache go.mod for pre-downloading dependencies and only redownloading them in subsequent builds if they change
 COPY go.mod go.sum ./
 RUN go mod download
-
-RUN mkdir -p /app/bin
 
 COPY . .
 RUN CGO_ENABLED=0 go build -ldflags '-s -w -extldflags "-static"' -o /app/bin -v 
